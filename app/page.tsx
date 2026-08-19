@@ -10,6 +10,7 @@ import {
 
 type MediaItem = {
   src: string;
+  poster?: string;
   title: string;
   type: "image" | "video";
   orientation?: "landscape" | "portrait";
@@ -27,6 +28,7 @@ type Category = {
 const mediaVersion = "cos-h264-20260819";
 const videoBaseUrl = "https://zhc-ai-video-1454067432.cos.ap-guangzhou.myqcloud.com";
 const videoUrl = (filename: string) => `${videoBaseUrl}/${filename}`;
+const posterUrl = (filename: string) => `/works/posters/${filename.replace(/\.mp4$/, ".jpg")}`;
 
 const aiArtImages: MediaItem[] = Array.from({ length: 14 }, (_, index) => {
   const number = index + 1;
@@ -44,7 +46,7 @@ const categories: Category[] = [
     title: "AI漫剧",
     en: "AI ANIMATION",
     text: "从剧本拆分、角色设计到分镜成片，完成连续的 AI 动画叙事。",
-    media: [{ src: videoUrl("ai.manju.mp4"), title: "AI漫剧", type: "video", orientation: "landscape" }],
+    media: [{ src: videoUrl("ai.manju.mp4"), poster: posterUrl("ai.manju.mp4"), title: "AI漫剧", type: "video", orientation: "landscape" }],
   },
   {
     id: "short-drama",
@@ -52,7 +54,7 @@ const categories: Category[] = [
     title: "真人短剧",
     en: "SHORT DRAMA",
     text: "围绕人物、情节与镜头语言，呈现电影感真人短剧内容。",
-    media: [{ src: videoUrl("zhenrenmanju.mp4"), title: "真人短剧", type: "video", orientation: "portrait" }],
+    media: [{ src: videoUrl("zhenrenmanju.mp4"), poster: posterUrl("zhenrenmanju.mp4"), title: "真人短剧", type: "video", orientation: "portrait" }],
   },
   {
     id: "talking-video",
@@ -60,7 +62,7 @@ const categories: Category[] = [
     title: "口播",
     en: "TALKING VIDEO",
     text: "数字人、真人与产品口播，让信息表达更自然、更有记忆点。",
-    media: [{ src: videoUrl("koubo.mp4"), title: "口播作品", type: "video", orientation: "portrait" }],
+    media: [{ src: videoUrl("koubo.mp4"), poster: posterUrl("koubo.mp4"), title: "口播作品", type: "video", orientation: "portrait" }],
   },
   {
     id: "ads",
@@ -68,7 +70,7 @@ const categories: Category[] = [
     title: "信息流广告",
     en: "FEED ADS",
     text: "用明确的卖点与视觉节奏，完成适合传播的信息流内容。",
-    media: [{ src: videoUrl("ai.xinxiliu.mp4"), title: "信息流广告", type: "video", orientation: "portrait" }],
+    media: [{ src: videoUrl("ai.xinxiliu.mp4"), poster: posterUrl("ai.xinxiliu.mp4"), title: "信息流广告", type: "video", orientation: "portrait" }],
   },
   {
     id: "commercial-film",
@@ -76,7 +78,7 @@ const categories: Category[] = [
     title: "宣传片",
     en: "PROMOTIONAL FILM",
     text: "品牌故事、企业形象与产品价值的电影化视觉表达。",
-    media: [{ src: videoUrl("ai.xuanchuanpian.mp4"), title: "宣传片", type: "video", orientation: "portrait" }],
+    media: [{ src: videoUrl("ai.xuanchuanpian.mp4"), poster: posterUrl("ai.xuanchuanpian.mp4"), title: "宣传片", type: "video", orientation: "portrait" }],
   },
   {
     id: "ai-art",
@@ -94,6 +96,7 @@ const categories: Category[] = [
     text: "精选影像、动画与视觉实验，记录持续生长的创作轨迹。",
     media: Array.from({ length: 6 }, (_, index) => ({
       src: videoUrl(`jijin${index === 0 ? "" : index + 1}.mp4`),
+      poster: posterUrl(`jijin${index === 0 ? "" : index + 1}.mp4`),
       title: `个人集锦 · ${String(index + 1).padStart(2, "0")}`,
       type: "video" as const,
       orientation: "portrait" as const,
@@ -115,6 +118,7 @@ export default function Home() {
   const cursorRing = useRef<HTMLDivElement>(null);
   const [ripples, setRipples] = useState<Ripple[]>([]);
   const [selectedImage, setSelectedImage] = useState<MediaItem | null>(null);
+  const [selectedVideo, setSelectedVideo] = useState<MediaItem | null>(null);
 
   useEffect(() => {
     const root = document.documentElement;
@@ -166,11 +170,14 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    if (!selectedImage) return;
+    if (!selectedImage && !selectedVideo) return;
 
     const previousOverflow = document.body.style.overflow;
     const closeOnEscape = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setSelectedImage(null);
+      if (event.key === "Escape") {
+        setSelectedImage(null);
+        setSelectedVideo(null);
+      }
     };
 
     document.body.style.overflow = "hidden";
@@ -180,7 +187,22 @@ export default function Home() {
       document.body.style.overflow = previousOverflow;
       window.removeEventListener("keydown", closeOnEscape);
     };
-  }, [selectedImage]);
+  }, [selectedImage, selectedVideo]);
+
+  const startVideoPreview = (event: ReactPointerEvent<HTMLElement>) => {
+    if (event.pointerType === "touch" || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const video = event.currentTarget.querySelector("video");
+    if (!video) return;
+    video.muted = true;
+    void video.play().catch(() => undefined);
+  };
+
+  const stopVideoPreview = (event: ReactPointerEvent<HTMLElement>) => {
+    const video = event.currentTarget.querySelector("video");
+    if (!video) return;
+    video.pause();
+    video.currentTime = 0;
+  };
 
   const addRipple = (event: ReactPointerEvent<HTMLElement>) => {
     if (event.pointerType === "touch") return;
@@ -306,22 +328,39 @@ export default function Home() {
                 >
                   {category.media.map((item) =>
                     item.type === "video" ? (
-                      <article
+                      <button
                         className="media-card video-card"
                         data-orientation={item.orientation}
+                        type="button"
+                        onPointerEnter={startVideoPreview}
+                        onPointerLeave={stopVideoPreview}
+                        onClick={() => setSelectedVideo(item)}
+                        aria-label={`播放视频：${item.title}`}
                         key={item.src}
                       >
-                        <div className="video-frame" data-orientation={item.orientation}>
-                          <video controls playsInline preload="metadata" aria-label={item.title}>
+                        <span className="video-frame">
+                          <video
+                            muted
+                            loop
+                            playsInline
+                            preload="metadata"
+                            poster={item.poster}
+                            aria-hidden="true"
+                            tabIndex={-1}
+                          >
                             <source src={`${item.src}?v=${mediaVersion}`} type="video/mp4" />
                             当前浏览器不支持视频播放。
                           </video>
-                        </div>
-                        <div className="media-caption">
+                          <span className="video-preview-ui" aria-hidden="true">
+                            <i>▶</i>
+                            <small>悬停预览</small>
+                          </span>
+                        </span>
+                        <span className="media-caption">
                           <span>{item.title}</span>
-                          <small>PLAY FILM</small>
-                        </div>
-                      </article>
+                          <small>点击播放</small>
+                        </span>
+                      </button>
                     ) : (
                       <button
                         className="media-card image-card"
@@ -406,6 +445,39 @@ export default function Home() {
             <Image src={selectedImage.src} alt={selectedImage.title} fill sizes="100vw" priority />
           </div>
           <p>{selectedImage.title}</p>
+        </div>
+      )}
+
+      {selectedVideo && (
+        <div
+          className="video-lightbox"
+          role="dialog"
+          aria-modal="true"
+          aria-label={selectedVideo.title}
+          onClick={() => setSelectedVideo(null)}
+        >
+          <button
+            className="lightbox-close"
+            type="button"
+            onClick={() => setSelectedVideo(null)}
+            aria-label="关闭视频"
+          >
+            关闭 ×
+          </button>
+          <div className="lightbox-video" onClick={(event) => event.stopPropagation()}>
+            <video
+              key={selectedVideo.src}
+              controls
+              autoPlay
+              playsInline
+              poster={selectedVideo.poster}
+              aria-label={selectedVideo.title}
+            >
+              <source src={`${selectedVideo.src}?v=${mediaVersion}`} type="video/mp4" />
+              当前浏览器不支持视频播放。
+            </video>
+          </div>
+          <p>{selectedVideo.title}</p>
         </div>
       )}
     </main>
