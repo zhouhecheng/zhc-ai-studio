@@ -21,11 +21,21 @@ async function prefixStaticPaths(directory) {
     if (!textExtensions.has(extname(entry.name))) continue;
 
     const current = await readFile(target, "utf8");
-    const updated = current
+    const protectedPaths = current
+      .replaceAll("/zhc-ai-studio/fonts/", "__ZHC_FONTS__")
+      .replaceAll("/zhc-ai-studio/works/posters/", "__ZHC_POSTERS__")
+      .replaceAll("/zhc-ai-studio/zhc-studio-bg.png", "__ZHC_BACKGROUND__")
+      .replaceAll("/zhc-ai-studio/og.png", "__ZHC_OG__");
+
+    const updated = protectedPaths
       .replaceAll("/fonts/", "/zhc-ai-studio/fonts/")
       .replaceAll("/works/posters/", "/zhc-ai-studio/works/posters/")
       .replaceAll("/zhc-studio-bg.png", "/zhc-ai-studio/zhc-studio-bg.png")
-      .replaceAll("/og.png", "/zhc-ai-studio/og.png");
+      .replaceAll("/og.png", "/zhc-ai-studio/og.png")
+      .replaceAll("__ZHC_FONTS__", "/zhc-ai-studio/fonts/")
+      .replaceAll("__ZHC_POSTERS__", "/zhc-ai-studio/works/posters/")
+      .replaceAll("__ZHC_BACKGROUND__", "/zhc-ai-studio/zhc-studio-bg.png")
+      .replaceAll("__ZHC_OG__", "/zhc-ai-studio/og.png");
 
     if (updated !== current) await writeFile(target, updated, "utf8");
   }

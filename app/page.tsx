@@ -112,6 +112,8 @@ const processSteps = [
   { number: "05", title: "剪辑成品", en: "FINAL CUT" },
 ];
 
+const featuredReel = categories[0].media[0];
+
 type Ripple = { id: number; x: number; y: number };
 
 export default function Home() {
@@ -136,13 +138,13 @@ export default function Home() {
     };
 
     const handlePointerOver = (event: PointerEvent) => {
-      if ((event.target as HTMLElement).closest("a, button")) {
+      if ((event.target as HTMLElement).closest("a, button, summary")) {
         cursorRing.current?.classList.add("is-hovering");
       }
     };
 
     const handlePointerOut = (event: PointerEvent) => {
-      if ((event.target as HTMLElement).closest("a, button")) {
+      if ((event.target as HTMLElement).closest("a, button, summary")) {
         cursorRing.current?.classList.remove("is-hovering");
       }
     };
@@ -214,7 +216,7 @@ export default function Home() {
   };
 
   return (
-    <main className="site-shell" data-version="confirmed-v1" onPointerDown={addRipple}>
+    <main className="site-shell" data-version="editorial-cut-20260819" onPointerDown={addRipple}>
       <div className="background-photo" aria-hidden="true" />
       <div className="background-overlay" aria-hidden="true" />
 
@@ -234,86 +236,148 @@ export default function Home() {
       <div className="page-content">
         <header className="topbar">
           <a className="brand-mark" href="#top" aria-label="ZHC AI STUDIO 首页">
-            <strong>ZHC</strong><span>AI STUDIO</span>
+            <strong>ZHC</strong>
+            <span>AI FILM STUDIO<small>周合成视觉创作</small></span>
           </a>
           <nav className="topnav" aria-label="主导航">
-            <a href="#top">首页</a>
-            <a href="#ai-animation">AI漫剧</a>
-            <a href="#short-drama">真人短剧</a>
-            <a href="#talking-video">口播</a>
-            <a href="#ads">信息流广告</a>
-            <a href="#commercial-film">宣传片</a>
-            <a href="#ai-art">AI绘图</a>
-            <a href="#portfolio">个人集锦</a>
-            <a href="#about">关于我</a>
+            <a href="#works"><span>01</span>作品</a>
+            <a href="#about"><span>02</span>关于</a>
+            <a href="#process"><span>03</span>流程</a>
+            <a href="#contact"><span>04</span>联系</a>
           </nav>
-          <a className="nav-cta" href="#contact">联系合作</a>
+          <div className="nav-meta">
+            <span><i /> AVAILABLE FOR PROJECTS</span>
+            <a className="nav-cta" href="#contact">发起合作 ↗</a>
+          </div>
+          <details className="mobile-menu">
+            <summary aria-label="打开导航">菜单</summary>
+            <nav aria-label="移动端导航">
+              <a href="#works">作品</a>
+              <a href="#about">关于</a>
+              <a href="#process">流程</a>
+              <a href="#contact">联系</a>
+            </nav>
+          </details>
         </header>
 
         <section id="top" className="hero" aria-labelledby="hero-title">
-          <div className="hero-copy">
-            <p className="hero-kicker"><span /> WELCOME TO</p>
-            <h1 id="hero-title">ZHC<br /><em>AI STUDIO</em></h1>
-            <h2>你负责提供想法，<br />我负责实现想法</h2>
-            <div className="hero-actions">
-              <a className="button button-primary" href="#works">浏览作品</a>
-              <a className="button button-ghost" href="#contact">联系我们</a>
+          <div className="hero-chapter" aria-hidden="true">
+            <span>ZHOU HECHENG</span>
+            <span>PORTFOLIO / 2026</span>
+          </div>
+
+          <div className="hero-title-wrap">
+            <p className="hero-kicker">AI FILMMAKER <span>×</span> VISUAL ARTIST</p>
+            <h1 id="hero-title">
+              <span>ZHC</span>
+              <span>AI FILM</span>
+              <em>STUDIO</em>
+            </h1>
+          </div>
+
+          <div className="hero-bottom">
+            <div className="hero-intro">
+              <p>你负责提供想法，<br />我负责实现想法。</p>
+              <div className="hero-actions">
+                <a className="button button-primary" href="#works">观看作品 <span>↓</span></a>
+                <a className="button button-ghost" href="#contact">合作咨询</a>
+              </div>
+            </div>
+
+            <button
+              className="hero-reel"
+              type="button"
+              onPointerEnter={startVideoPreview}
+              onPointerLeave={stopVideoPreview}
+              onClick={() => setSelectedVideo(featuredReel)}
+              aria-label="播放精选作品：AI漫剧"
+            >
+              <video muted loop playsInline preload="metadata" poster={featuredReel.poster} aria-hidden="true">
+                <source src={`${featuredReel.src}?v=${mediaVersion}`} type="video/mp4" />
+              </video>
+              <span className="hero-reel-label"><i>▶</i><span><small>FEATURED REEL</small>播放精选作品</span></span>
+              <em>00:01</em>
+            </button>
+
+            <div className="hero-index" aria-label="作品范围">
+              <span>07 个创作门类</span>
+              <p>AI 漫剧 / 真人短剧 / 口播<br />广告 / 宣传片 / 绘图 / 集锦</p>
             </div>
           </div>
 
           <div className="hero-signature" aria-label="周合成 ZHC 签名">
             <span>周合成</span><small>ZHC</small>
           </div>
-          <p className="hero-side-note">AI FILM · AI ANIMATION · VISUAL CREATION</p>
+          <p className="hero-side-note">SCROLL TO ENTER THE ARCHIVE</p>
         </section>
 
         <section id="about" className="section about-section" aria-labelledby="about-title">
-          <div className="section-label"><span>01</span><p>ABOUT ME</p></div>
+          <div className="section-label"><span>01</span><p>ABOUT / STATEMENT</p></div>
           <div className="about-main">
-            <h2 id="about-title">关于我</h2>
-            <p>
-              我是一名AI创作者，专注于3D动漫风格，<br />
-              从剧本拆分，到角色设计，视频产生，<br />
-              最后的成品展示。
-            </p>
+            <p className="about-eyebrow">周合成 · AI 创作者</p>
+            <h2 id="about-title">在技术与艺术之间，<br />把想法变成<em>完整作品。</em></h2>
           </div>
-          <blockquote>
-            我的技术与艺术结合起来，<br />
-            相信AI能帮我创造出完美的作品。
-          </blockquote>
+          <div className="about-detail">
+            <p>
+              专注于 3D 动漫风格与 AI 影视创作，从剧本拆分、角色设计、
+              画面生成到剪辑成片，让每一个视觉选择都服务于故事。
+            </p>
+            <blockquote>“我的技术与艺术结合起来，相信 AI 能帮我创造出完美的作品。”</blockquote>
+            <dl>
+              <div><dt>07</dt><dd>创作门类</dd></div>
+              <div><dt>25</dt><dd>线上作品</dd></div>
+              <div><dt>∞</dt><dd>持续创作</dd></div>
+            </dl>
+          </div>
         </section>
 
         <section id="works" className="section works-section" aria-labelledby="works-title">
           <header className="section-header">
-            <div className="section-label"><span>02</span><p>SELECTED WORKS</p></div>
-            <h2 id="works-title">作品分类</h2>
-            <p>从故事、角色到最终成片，覆盖静态与动态的完整视觉创作。</p>
+            <div className="section-label"><span>02</span><p>SELECTED / WORKS</p></div>
+            <h2 id="works-title"><span>作品</span><em>索引</em></h2>
+            <p>从故事、角色到最终成片。先选择一个创作门类，再进入完整作品档案。</p>
           </header>
-          <div className="category-grid">
+          <div className="category-index">
             {categories.map((category) => (
-              <a className="category-card" href={`#${category.id}`} key={category.id}>
-                <span className="card-number">{category.number}</span>
-                <div>
-                  <small>{category.en}</small>
+              <a className="category-row" href={`#${category.id}`} key={category.id}>
+                <span className="category-number">{category.number}</span>
+                <div className="category-title">
                   <h3>{category.title}</h3>
+                  <small>{category.en}</small>
+                </div>
+                <div className="category-description">
                   <p>{category.text}</p>
                 </div>
-                <i aria-hidden="true">↗</i>
+                <span className="category-count">{String(category.media.length).padStart(2, "0")} / WORKS</span>
+                <figure aria-hidden="true">
+                  <img
+                    src={category.media[0].type === "video" ? category.media[0].poster : category.media[0].src}
+                    alt=""
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </figure>
+                <i aria-hidden="true">↘</i>
               </a>
             ))}
           </div>
 
           <div className="portfolio-groups" aria-label="分类作品展示">
+            <div className="archive-intro">
+              <span>FULL ARCHIVE</span>
+              <p>影像不是装饰，<br />每一帧都是作品本身。</p>
+              <em>25 ITEMS / 07 CATEGORIES</em>
+            </div>
             {categories.map((category) => (
               <section className="portfolio-group" id={category.id} key={category.id}>
                 <header className="portfolio-header">
-                  <span>{category.number}</span>
+                  <span className="portfolio-number">{category.number}</span>
                   <div>
                     <small>{category.en}</small>
                     <h3>{category.title}</h3>
                   </div>
                   <p>{category.text}</p>
-                  <em>{String(category.media.length).padStart(2, "0")} WORKS</em>
+                  <em>{String(category.media.length).padStart(2, "0")} WORKS / VIEW ALL</em>
                 </header>
 
                 <div
@@ -358,7 +422,7 @@ export default function Home() {
                         </span>
                         <span className="media-caption">
                           <span>{item.title}</span>
-                          <small>点击播放</small>
+                          <small>PLAY FILM ↗</small>
                         </span>
                       </button>
                     ) : (
@@ -379,7 +443,7 @@ export default function Home() {
                         </span>
                         <span className="media-caption">
                           <span>{item.title}</span>
-                          <small>VIEW IMAGE</small>
+                          <small>VIEW FRAME ↗</small>
                         </span>
                       </button>
                     ),
@@ -392,36 +456,40 @@ export default function Home() {
 
         <section id="process" className="section process-section" aria-labelledby="process-title">
           <header className="section-header compact-header">
-            <div className="section-label"><span>03</span><p>CREATIVE PROCESS</p></div>
-            <h2 id="process-title">创作流程</h2>
-            <p>让每一步都服务于最终作品，而不是停留在工具演示。</p>
+            <div className="section-label"><span>03</span><p>CREATIVE / PROCESS</p></div>
+            <h2 id="process-title"><span>从一个想法</span><em>到最终成片</em></h2>
+            <p>五个环节串成一条完整创作链，让技术、审美与叙事在同一个方向上发生。</p>
           </header>
           <ol className="process-grid">
             {processSteps.map((step, index) => (
               <li key={step.number}>
                 <span>{step.number}</span>
-                <small>{step.en}</small>
-                <h3>{step.title}</h3>
-                {index < processSteps.length - 1 && <i aria-hidden="true">→</i>}
+                <div><small>{step.en}</small><h3>{step.title}</h3></div>
+                {index < processSteps.length - 1 && <i aria-hidden="true">↘</i>}
               </li>
             ))}
           </ol>
         </section>
 
         <section id="contact" className="contact-section" aria-labelledby="contact-title">
-          <div className="section-label"><span>04</span><p>CONTACT</p></div>
-          <h2 id="contact-title">艺术的养成<br />只需你我共创</h2>
-          <div className="contact-grid">
-            <a href="mailto:zhczhc200512@gmail.com"><small>邮箱 / EMAIL</small><span>zhczhc200512@gmail.com</span></a>
-            <div><small>微信 / WECHAT</small><span>17629966509</span></div>
-            <a href="tel:17629966509"><small>电话 / PHONE</small><span>17629966509</span></a>
+          <div className="contact-topline">
+            <div className="section-label"><span>04</span><p>CONTACT / COLLABORATION</p></div>
+            <span><i /> AVAILABLE FOR PROJECTS</span>
           </div>
+          <h2 id="contact-title"><span>让想法</span><em>开始成片。</em></h2>
+          <p className="contact-lead">艺术的养成，只需你我共创。<br />如果你有一个故事、品牌或画面想法，现在就可以开始。</p>
+          <div className="contact-grid">
+            <a href="mailto:zhczhc200512@gmail.com"><small>01 / EMAIL</small><span>zhczhc200512@gmail.com</span><i>↗</i></a>
+            <div><small>02 / WECHAT</small><span>17629966509</span><i>+</i></div>
+            <a href="tel:17629966509"><small>03 / PHONE</small><span>17629966509</span><i>↗</i></a>
+          </div>
+          <div className="contact-signature"><span>周合成</span><small>ZHC</small></div>
         </section>
 
         <footer className="footer">
-          <p>© 2026 ZHC AI STUDIO</p>
-          <p>AI FILM · ANIMATION · VISUAL CREATION</p>
-          <a href="#top">返回顶部 ↑</a>
+          <p>© 2026 ZHC AI FILM STUDIO</p>
+          <p>周合成 · AI 影视与视觉创作</p>
+          <a href="#top">BACK TO TOP ↑</a>
         </footer>
       </div>
 
