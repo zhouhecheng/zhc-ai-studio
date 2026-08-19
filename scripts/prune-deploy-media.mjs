@@ -12,3 +12,11 @@ async function removeVideos(directory) {
 }
 
 await removeVideos(distRoot);
+
+const worksRoot = resolve(distRoot, "client", "works");
+
+for (const entry of await readdir(worksRoot, { withFileTypes: true })) {
+  if (entry.isFile() && /^(?:[1-9]|1[0-4])\.(?:png|jpg)$/i.test(entry.name)) {
+    await rm(resolve(worksRoot, entry.name));
+  }
+}

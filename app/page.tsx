@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import {
   useEffect,
   useRef,
@@ -26,14 +25,15 @@ type Category = {
 };
 
 const mediaVersion = "cos-h264-20260819";
-const videoBaseUrl = "https://zhc-ai-video-1454067432.cos.ap-guangzhou.myqcloud.com";
-const videoUrl = (filename: string) => `${videoBaseUrl}/${filename}`;
+const mediaBaseUrl = "https://zhc-ai-video-1454067432.cos.ap-guangzhou.myqcloud.com";
+const mediaUrl = (filename: string) => `${mediaBaseUrl}/${filename}`;
+const videoUrl = mediaUrl;
 const posterUrl = (filename: string) => `/works/posters/${filename.replace(/\.mp4$/, ".jpg")}`;
 
 const aiArtImages: MediaItem[] = Array.from({ length: 14 }, (_, index) => {
   const number = index + 1;
   return {
-    src: `/works/${number}.${number === 11 ? "jpg" : "png"}`,
+    src: mediaUrl(`${number}.${number === 11 ? "jpg" : "png"}`),
     title: `AI绘图 · ${String(number).padStart(2, "0")}`,
     type: "image",
   };
@@ -370,11 +370,11 @@ export default function Home() {
                         key={item.src}
                       >
                         <span className="image-frame">
-                          <Image
+                          <img
                             src={item.src}
                             alt={item.title}
-                            fill
-                            sizes="(max-width: 760px) 100vw, (max-width: 1180px) 50vw, 25vw"
+                            loading="lazy"
+                            decoding="async"
                           />
                         </span>
                         <span className="media-caption">
@@ -442,7 +442,7 @@ export default function Home() {
             关闭 ×
           </button>
           <div className="lightbox-image" onClick={(event) => event.stopPropagation()}>
-            <Image src={selectedImage.src} alt={selectedImage.title} fill sizes="100vw" priority />
+            <img src={selectedImage.src} alt={selectedImage.title} />
           </div>
           <p>{selectedImage.title}</p>
         </div>
