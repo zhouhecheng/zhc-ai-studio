@@ -1,4 +1,4 @@
-import { open, readdir } from "node:fs/promises";
+import { open, readdir, stat } from "node:fs/promises";
 import { join } from "node:path";
 
 const siteUrl = process.env.SITE_URL?.replace(/\/$/, "");
@@ -9,7 +9,12 @@ const chunkSize = 8 * 1024 * 1024;
 if (!siteUrl || !token) throw new Error("SITE_URL and MEDIA_UPLOAD_TOKEN are required");
 
 const authHeaders = { authorization: `Bearer ${token}` };
-const videoNames = (await readdir(mediaDirectory)).filter((name) => name.toLowerCase().endsWith(".mp4")).sort();
+const videoFiles = await Promise.all(
+  (await readdir(mediaDirectory))
+    .filter((name) => name.toLowerCase().endsWith(".mp4"))
+    .map(async (name) => ({ name, size: (await stat(join(mediaDirectory, name))).size })),
+);
+videoFiles.sort((a, b) => a.size - b.size);
 
 async function expectJson(response) {
   const data = await response.json();
@@ -17,7 +22,7 @@ async function expectJson(response) {
   return data;
 }
 
-for (const key of videoNames) {
+for (const { name: key } of videoFiles) {
   const source = await open(join(mediaDirectory, key), "r");
   const { size } = await source.stat();
   const init = await expectJson(await fetch(`${siteUrl}/__media/init`, {
