@@ -21,6 +21,7 @@
 # production
 /build
 /dist
+/dist-github
 /.wrangler
 
 # Videos stay on this computer for local preview and are uploaded to hosted object storage.

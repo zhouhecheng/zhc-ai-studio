@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "node node_modules/vinext/dist/cli.js dev",
     "build": "node node_modules/vinext/dist/cli.js build && node scripts/prune-deploy-media.mjs",
+    "build:github": "node node_modules/vite/bin/vite.js build --config vite.github.config.ts && node scripts/prepare-github-pages.mjs",
     "start": "node node_modules/vinext/dist/cli.js start",
     "lint": "eslint . --ignore-pattern dist --ignore-pattern .next",
     "media:upload": "node scripts/upload-media.mjs"
