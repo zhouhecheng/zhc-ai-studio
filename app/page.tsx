@@ -24,7 +24,9 @@ type Category = {
   media: MediaItem[];
 };
 
-const mediaVersion = "h264-20260819";
+const mediaVersion = "cos-h264-20260819";
+const videoBaseUrl = "https://zhc-ai-video-1454067432.cos.ap-guangzhou.myqcloud.com";
+const videoUrl = (filename: string) => `${videoBaseUrl}/${filename}`;
 
 const aiArtImages: MediaItem[] = Array.from({ length: 14 }, (_, index) => {
   const number = index + 1;
@@ -42,7 +44,7 @@ const categories: Category[] = [
     title: "AI漫剧",
     en: "AI ANIMATION",
     text: "从剧本拆分、角色设计到分镜成片，完成连续的 AI 动画叙事。",
-    media: [{ src: "/works/ai.manju.mp4", title: "AI漫剧", type: "video", orientation: "landscape" }],
+    media: [{ src: videoUrl("ai.manju.mp4"), title: "AI漫剧", type: "video", orientation: "landscape" }],
   },
   {
     id: "short-drama",
@@ -50,7 +52,7 @@ const categories: Category[] = [
     title: "真人短剧",
     en: "SHORT DRAMA",
     text: "围绕人物、情节与镜头语言，呈现电影感真人短剧内容。",
-    media: [{ src: "/works/zhenrenmanju.mp4", title: "真人短剧", type: "video", orientation: "portrait" }],
+    media: [{ src: videoUrl("zhenrenmanju.mp4"), title: "真人短剧", type: "video", orientation: "portrait" }],
   },
   {
     id: "talking-video",
@@ -58,7 +60,7 @@ const categories: Category[] = [
     title: "口播",
     en: "TALKING VIDEO",
     text: "数字人、真人与产品口播，让信息表达更自然、更有记忆点。",
-    media: [{ src: "/works/koubo.mp4", title: "口播作品", type: "video", orientation: "portrait" }],
+    media: [{ src: videoUrl("koubo.mp4"), title: "口播作品", type: "video", orientation: "portrait" }],
   },
   {
     id: "ads",
@@ -66,7 +68,7 @@ const categories: Category[] = [
     title: "信息流广告",
     en: "FEED ADS",
     text: "用明确的卖点与视觉节奏，完成适合传播的信息流内容。",
-    media: [{ src: "/works/ai.xinxiliu.mp4", title: "信息流广告", type: "video", orientation: "portrait" }],
+    media: [{ src: videoUrl("ai.xinxiliu.mp4"), title: "信息流广告", type: "video", orientation: "portrait" }],
   },
   {
     id: "commercial-film",
@@ -74,7 +76,7 @@ const categories: Category[] = [
     title: "宣传片",
     en: "PROMOTIONAL FILM",
     text: "品牌故事、企业形象与产品价值的电影化视觉表达。",
-    media: [{ src: "/works/ai.xuanchuanpian.mp4", title: "宣传片", type: "video", orientation: "portrait" }],
+    media: [{ src: videoUrl("ai.xuanchuanpian.mp4"), title: "宣传片", type: "video", orientation: "portrait" }],
   },
   {
     id: "ai-art",
@@ -91,7 +93,7 @@ const categories: Category[] = [
     en: "PORTFOLIO",
     text: "精选影像、动画与视觉实验，记录持续生长的创作轨迹。",
     media: Array.from({ length: 6 }, (_, index) => ({
-      src: `/works/jijin${index === 0 ? "" : index + 1}.mp4`,
+      src: videoUrl(`jijin${index === 0 ? "" : index + 1}.mp4`),
       title: `个人集锦 · ${String(index + 1).padStart(2, "0")}`,
       type: "video" as const,
       orientation: "portrait" as const,
