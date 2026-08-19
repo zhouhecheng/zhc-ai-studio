@@ -24,6 +24,8 @@ type Category = {
   media: MediaItem[];
 };
 
+const mediaVersion = "h264-20260819";
+
 const aiArtImages: MediaItem[] = Array.from({ length: 14 }, (_, index) => {
   const number = index + 1;
   return {
@@ -309,7 +311,7 @@ export default function Home() {
                       >
                         <div className="video-frame" data-orientation={item.orientation}>
                           <video controls playsInline preload="metadata" aria-label={item.title}>
-                            <source src={item.src} type="video/mp4" />
+                            <source src={`${item.src}?v=${mediaVersion}`} type="video/mp4" />
                             当前浏览器不支持视频播放。
                           </video>
                         </div>
