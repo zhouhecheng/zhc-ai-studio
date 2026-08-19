@@ -6,6 +6,7 @@ const outputRoot = resolve("dist-github");
 await mkdir(resolve(outputRoot, "works"), { recursive: true });
 await cp(resolve("public", "zhc-studio-bg.png"), resolve(outputRoot, "zhc-studio-bg.png"));
 await cp(resolve("public", "og.png"), resolve(outputRoot, "og.png"));
+await cp(resolve("public", "fonts"), resolve(outputRoot, "fonts"), { recursive: true });
 await cp(resolve("public", "works", "posters"), resolve(outputRoot, "works", "posters"), { recursive: true });
 
 const textExtensions = new Set([".html", ".css", ".js", ".json"]);
@@ -21,6 +22,7 @@ async function prefixStaticPaths(directory) {
 
     const current = await readFile(target, "utf8");
     const updated = current
+      .replaceAll("/fonts/", "/zhc-ai-studio/fonts/")
       .replaceAll("/works/posters/", "/zhc-ai-studio/works/posters/")
       .replaceAll("/zhc-studio-bg.png", "/zhc-ai-studio/zhc-studio-bg.png")
       .replaceAll("/og.png", "/zhc-ai-studio/og.png");

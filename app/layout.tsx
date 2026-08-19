@@ -51,6 +51,9 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       lang="zh-CN"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
+      <head>
+        <link rel="stylesheet" href="/fonts/lxgw-wenkai-screen.css" />
+      </head>
       <body className="min-h-full flex flex-col">{children}</body>
     </html>
   );
