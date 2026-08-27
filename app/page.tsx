@@ -24,7 +24,7 @@ type Category = {
   media: MediaItem[];
 };
 
-const mediaVersion = "cos-h264-20260819";
+const mediaVersion = "cos-ai-projects-20260827";
 const mediaBaseUrl = "https://zhc-ai-video-1454067432.cos.ap-guangzhou.myqcloud.com";
 const mediaUrl = (filename: string) => `${mediaBaseUrl}/${filename}`;
 const videoUrl = mediaUrl;
@@ -39,14 +39,26 @@ const aiArtImages: MediaItem[] = Array.from({ length: 14 }, (_, index) => {
   };
 });
 
+const aiProjectVideos: MediaItem[] = [
+  { src: videoUrl("ai.manju.mp4"), poster: posterUrl("ai.manju.mp4"), title: "AI项目 · 精选", type: "video", orientation: "landscape" },
+  { src: videoUrl("a.mp4"), poster: posterUrl("a.mp4"), title: "AI项目 · 01", type: "video", orientation: "landscape" },
+  ...Array.from({ length: 6 }, (_, index) => ({
+    src: videoUrl(`a${index + 1}.mp4`),
+    poster: posterUrl(`a${index + 1}.mp4`),
+    title: `AI项目 · ${String(index + 2).padStart(2, "0")}`,
+    type: "video" as const,
+    orientation: "portrait" as const,
+  })),
+];
+
 const categories: Category[] = [
   {
     id: "ai-animation",
     number: "01",
-    title: "AI漫剧",
-    en: "AI ANIMATION",
-    text: "从剧本拆分、角色设计到分镜成片，完成连续的 AI 动画叙事。",
-    media: [{ src: videoUrl("ai.manju.mp4"), poster: posterUrl("ai.manju.mp4"), title: "AI漫剧", type: "video", orientation: "landscape" }],
+    title: "AI项目",
+    en: "AI PROJECTS",
+    text: "从创意、角色与分镜到最终成片，呈现完整、多元的 AI 影像项目。",
+    media: aiProjectVideos,
   },
   {
     id: "short-drama",
@@ -290,7 +302,7 @@ export default function Home() {
               onPointerEnter={startVideoPreview}
               onPointerLeave={stopVideoPreview}
               onClick={() => setSelectedVideo(featuredReel)}
-              aria-label="播放精选作品：AI漫剧"
+              aria-label={`播放精选作品：${featuredReel.title}`}
             >
               <video muted loop playsInline preload="metadata" poster={featuredReel.poster} aria-hidden="true">
                 <source src={`${featuredReel.src}?v=${mediaVersion}`} type="video/mp4" />
@@ -301,7 +313,7 @@ export default function Home() {
 
             <div className="hero-index" aria-label="作品范围">
               <span>07 个创作门类</span>
-              <p>AI 漫剧 / 真人短剧 / 口播<br />广告 / 宣传片 / 绘图 / 集锦</p>
+              <p>AI 项目 / 真人短剧 / 口播<br />广告 / 宣传片 / 绘图 / 集锦</p>
             </div>
           </div>
 
@@ -325,7 +337,7 @@ export default function Home() {
             <blockquote>“我的技术与艺术结合起来，相信 AI 能帮我创造出完美的作品。”</blockquote>
             <dl>
               <div><dt>07</dt><dd>创作门类</dd></div>
-              <div><dt>25</dt><dd>线上作品</dd></div>
+              <div><dt>32</dt><dd>线上作品</dd></div>
               <div><dt>∞</dt><dd>持续创作</dd></div>
             </dl>
           </div>
@@ -366,7 +378,7 @@ export default function Home() {
             <div className="archive-intro">
               <span>FULL ARCHIVE</span>
               <p>影像不是装饰，<br />每一帧都是作品本身。</p>
-              <em>25 ITEMS / 07 CATEGORIES</em>
+              <em>32 ITEMS / 07 CATEGORIES</em>
             </div>
             {categories.map((category) => (
               <section className="portfolio-group" id={category.id} key={category.id}>

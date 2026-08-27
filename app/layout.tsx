@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 const title = "ZHC AI STUDIO｜周合成 AI 影视与视觉创作工作室";
-const description = "周合成的 AI 创作作品集，涵盖 AI 漫剧、真人短剧、口播、信息流广告、宣传片、AI 绘图与个人集锦。";
+const description = "周合成的 AI 创作作品集，涵盖 AI 项目、真人短剧、口播、信息流广告、宣传片、AI 绘图与个人集锦。";
 
 export async function generateMetadata(): Promise<Metadata> {
   const requestHeaders = await headers();
